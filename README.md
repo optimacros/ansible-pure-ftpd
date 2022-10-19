@@ -12,7 +12,11 @@ echo “MySuperPass” > ~/.ansible_pass.txt
 ```
 ansible-playbook ftp-playbook.yml --vault-password-file .ansible_pass.txt
 ```
-
+Для всех серверв указанных в файле hosts
+```
+ansible-playbook ftp-playbook.yml --vault-password-file .ansible_pass.txt -l ftp-001 
+```
+Выполнить на хосте `ftp-001`
 
 ## Переменные роли
 
@@ -91,7 +95,7 @@ pure_ftpd_openssl_config:
   common: ""
   email: ""
 ```
-Параметры выпуска сертификата. Используется если значение `pure_ftpd_pem` не заданно. 
+Параметры выпуска сертификата. Используется если значение `pure_ftpd_pem` не заданно. Срок действия сертификата задается в поле `days` Роль умеет определять срок действия сертификатов. Для обновления сертификатов требуется запустить playbook на выполнение и истекшие сертификаты будут перевыпущенны на всех хостах. 
 
 
 
@@ -116,4 +120,11 @@ ansible-vault view ./host_vars/ftp-001.yml --vault-password-file .ansible_pass.t
 ```
 ansible-vault edit ./host_vars/ftp-001.yml --vault-password-file .ansible_pass.txt
 ```
+
+## Это не баг, это фича )
+Роль не умеет удалять учетные данные пользователя. В случае если изменить имя виртуального пользователя будет созданна еще одна учетная запись. 
+Если такой кейс возникнет требуется зайти на сервер и удалить `/etc/pure-ftpd/pureftpd.passwd` после чего перезапустить плейбук. 
+
+Смена пароля поддерживается. Просто указываем новый пароль для пользователя и выполняем плейбук. 
+
 
