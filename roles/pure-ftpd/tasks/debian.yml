@@ -1,0 +1,25 @@
+---
+- name: Task 0-1. Update apt cache.
+  ansible.builtin.apt: 
+    update_cache: yes 
+    cache_valid_time: 86400
+
+
+- name: Task 0-2. Install need packages
+  ansible.builtin.apt:
+    name: '{{ item }}'
+    state: present
+  with_items:
+    - pure-ftpd
+    - python3-pip
+    - openssl
+    - vim
+    - htop
+    - mc
+
+
+- name: Task 0-3. Install pexpect
+  ansible.builtin.pip:
+    name: pexpect
+    state: present
+

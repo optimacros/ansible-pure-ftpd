@@ -1,0 +1,87 @@
+---
+# defaults file for pure-ftpd
+
+# system ftp user and group
+pure_ftpd_user: "ftp"
+pure_ftpd_group: "ftp"
+pure_ftpd_root: "/var/ftp"
+
+
+# virtual users for ftp server
+pure_ftpd_vusers:
+  - name: ftp
+    dir: "{{ pure_ftpd_root }}"
+    password: "FTPisSoC00l?"
+
+
+# true for use tls
+pure_ftpd_tls: true
+# allow insecure connection
+# tls level 1 when true
+# tls level 2 when false
+pure_ftpd_allow_insecure: false
+
+# variable with content pem file
+#pure_ftpd_pem : |
+# -----BEGIN PRIVATE KEY-----
+# MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCmKFFE1LBM73EY
+# fwm07ozcWBcFSjJxCa8T+jZ5tRswxLaAjZYjWE44+DDn1inP8DzaXldeYQqwGQoA
+# k8z59gFKsbQv7n6vtlYPaN5cGB5DcXsguxJVhIA+tIKmuLhw+yALK/rRmwjk9Qmo
+# DDcNJl//JGdZFbw/4I4CLJ6s7K773ctI7D0wJ71hZyMaICbCJtpKSIWir3pnivqv
+# mWAtUXYoblNijHi09n+UPrkGkicgPM4LaMzu6yuFPxun1ykZMLoI8NDbNSdgHEur
+# 0dAB6w1CzoJWouK4Dh2BThna16PJCBChPy2Rnn2y5N/q/Ziwr6tMYAGsmMlpWF3p
+# WkX7PJW3AgMBAAECggEASbmD7c2NeGWZwevES9K5D5/Kfx9f6EYKuAuCllgke2wd
+# KkcoggBRnPeLA6NEJC6NYbsQeyEF1AMYLA9omNRt2E2nDMl+zspRvz6hwy00aGp2
+# 3pwC040aNjhz7DP0KrVSj4JxJQXsWWLcaQMafiwz1gq6DI4XXCRv/kj8EvBl5/zW
+# S3RsUgDIYVclSFTjGtFFqMiRZ07mS2DGipQuMhkFuzlemiIyhPAs8I7ss9J8HwYo
+# FGjYqOJgmY5/3MjLYjxt+XKrveBG0fKjvaTqEyDT2AlA1HGQQnlWrwgURmqmRkbZ
+# oN8Yv0j+Jku1/R7XCUuSgvdUckueSdCMNSTTcRr6CQKBgQDnxsPnxwsCq9hMaBd7
+# Li2eiUd1dGmF/HAEEuh4wUm0wtmCpWlpo6dNOv2VIOBfDOlceixzdc2XJpltY8dd
+# n5WXhxxMc7SiWXxuthcNlBbO5P+/t0MdFU7hAnjozw6EIUswEMxv4pv6WNlTZV10
+# J68QOeTJnd7/DXUXHBs7PuS43QKBgQC3hebNNM8hiMK2epZXwLFLgwrZ5hlA6RNS
+# kAZsl3choHe9FbG06uJinML9t967tfPV5+Poa2q0JHsckpEDPJ3D5VllqoYRjkry
+# QNhMTUhzkVxXSqvR9d/KaAHSuomwBrOAkDsEepYuULAn/H5Knk0+KbuoYJA/+uZi
+# UNMaxsfVowKBgQC+YX45vD1HDHC3Eil3fQ7r0kdoKx8id6BrODzMM7ifSg3wSn6z
+# z0F1Jqd0/3RNnwVweMpabMFbDtGoEPWJ6bOuq8SK59/QG0Eij1+QP7wcZe3NRHNU
+# SFRqbuVyFeIOlmp0KNhEbxdAJAsffXuuFYqvAV70XUD2r88mFGgp2hd14QKBgFgr
+# jq08F99mkxWUY7KZMxSySn5RXAShddUOuOdnBac0LxK633up9UWnRs8ajXnletZj
+# 6Ez7fnI5rKQXjm/dqXY6M+7yNCMvF7a3jLNr1ckgJxsRFudylyfpPCb/07KsJYU4
+# xgHq20g5H8i2N/6lezrIVg4ZBnSWmCTX6/RLWCq9AoGAXwaXzt84m1oiSwZZBhMi
+# 3wNKz3J+1X5fQOhkOChq54stGpUP4ej1Gqh7UG18kP0UHdJchgIAPXU3eF7bK8Cx
+# RcVFUA0jCEcSShGNCWXZ3Bjz8mJJRWiTF73Z7gBEr2zoS83mveNarnS7ZAwykxTt
+# Fk7nz2lbC6NHNUp4fU4OPGM=
+# -----END PRIVATE KEY-----
+# -----BEGIN CERTIFICATE-----
+# MIIDazCCAlOgAwIBAgIUL+TxVvif2HLdtgMgoNHrrk/GKrgwDQYJKoZIhvcNAQEL
+# BQAwRTELMAkGA1UEBhMCUlUxEzARBgNVBAgMClNvbWUtU3RhdGUxITAfBgNVBAoM
+# GEludGVybmV0IFdpZGdpdHMgUHR5IEx0ZDAeFw0yMjEwMTkwNjM5NThaFw0yMzEw
+# MTkwNjM5NThaMEUxCzAJBgNVBAYTAlJVMRMwEQYDVQQIDApTb21lLVN0YXRlMSEw
+# HwYDVQQKDBhJbnRlcm5ldCBXaWRnaXRzIFB0eSBMdGQwggEiMA0GCSqGSIb3DQEB
+# AQUAA4IBDwAwggEKAoIBAQCmKFFE1LBM73EYfwm07ozcWBcFSjJxCa8T+jZ5tRsw
+# xLaAjZYjWE44+DDn1inP8DzaXldeYQqwGQoAk8z59gFKsbQv7n6vtlYPaN5cGB5D
+# cXsguxJVhIA+tIKmuLhw+yALK/rRmwjk9QmoDDcNJl//JGdZFbw/4I4CLJ6s7K77
+# 3ctI7D0wJ71hZyMaICbCJtpKSIWir3pnivqvmWAtUXYoblNijHi09n+UPrkGkicg
+# PM4LaMzu6yuFPxun1ykZMLoI8NDbNSdgHEur0dAB6w1CzoJWouK4Dh2BThna16PJ
+# CBChPy2Rnn2y5N/q/Ziwr6tMYAGsmMlpWF3pWkX7PJW3AgMBAAGjUzBRMB0GA1Ud
+# DgQWBBQd4FB1wTOXMlocryFRcO85gqruXzAfBgNVHSMEGDAWgBQd4FB1wTOXMloc
+# ryFRcO85gqruXzAPBgNVHRMBAf8EBTADAQH/MA0GCSqGSIb3DQEBCwUAA4IBAQAv
+# Mfa9bAMcMlIDgehREUHhrB4Fc8Ao90eNGEsI+dmnLBqMyuu7BpDw3xzhlcHnTPuJ
+# 99TYQremeJPWPSSpGN2ihSlJn4gXS055IB/FfS3JWyzZB3e1PKsFCgH9cxGFhyuP
+# YOoFDLBtX5sxinyGht6AufzvLXQ76mv1IvdFSn9PhsI08V9p9DlU1Ih6c+u9Xzuv
+# 3LimHkNiRSCI2T2YEMWRLq/69k7dUIDdBQAUtwwN7QcwuCLglEIurQDUppDVok+x
+# yNLB/EWRKS/yATPH9QQO872RPtxEUQ7bMoIbOvGPMZcLPpIpm27VXEsHnPdDyWxY
+# VY24MgO1HqW23PdXcWCI
+# -----END CERTIFICATE-----
+
+# or use pure_ftpd_openssl_config for openssl pem
+pure_ftpd_openssl_config:
+  days: "365"
+  size: "2048"
+  country: "RU"
+  state: ""
+  locality: ""
+  org: ""
+  unit: ""
+  common: ""
+  email: ""
+

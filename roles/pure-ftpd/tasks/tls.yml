@@ -1,0 +1,68 @@
+---
+# assumes that `enable_tls: true`
+- name: Task 4-1 Define TLS support level.
+  no_log: true
+  ansible.builtin.set_fact:
+    tls_level: 2
+  when: not pure_ftpd_allow_insecure
+
+- name: Task 4-2 Define TLS support level.
+  no_log: true
+  ansible.builtin.set_fact:
+    tls_level: 1
+  when: pure_ftpd_allow_insecure
+
+- name: Task 4-3 Set TLS config level ({{ tls_level | default(2) }})
+  ansible.builtin.copy: 
+    content : '{{ tls_level | default(2) }}' 
+    dest    : '{{ __ftp_conf_root }}/TLS'
+    owner   : root 
+    group   : root
+
+- name: Task 4-4 Install configured TLS PEM for pure-ftpd
+  no_log: true
+  ansible.builtin.copy:  
+    content : "{{ pure_ftpd_pem }}" 
+    dest : /etc/ssl/private/pure-ftpd.pem 
+    owner: root 
+    group: root
+  when: pure_ftpd_pem is defined
+
+- name: Task 4-5 Check if pure-pw centificate file exists
+  ansible.builtin.stat: 
+    path: /etc/ssl/private/pure-ftpd.pem
+  register: r_ftppem
+
+- name: Task 4-6  Check if pure-pw centificate is expired
+  community.crypto.x509_certificate_info:
+    path: /etc/ssl/private/pure-ftpd.pem
+    valid_at:
+      now: "+0s"
+  register: result_privatekey
+  when: r_ftppem.stat.exists
+
+
+- name: Task 4-7 Generate TLS PEM for pure-ftpd
+  ansible.builtin.expect:
+    command: openssl req -x509 -nodes -days {{ pure_ftpd_openssl_config.days }} -newkey rsa:{{ pure_ftpd_openssl_config.size }} -keyout /etc/ssl/private/pure-ftpd.pem -out /etc/ssl/private/pure-ftpd.pem
+    responses:
+      (?i)country name: "{{ pure_ftpd_openssl_config.country }}"
+      (?i)state or province name: "{{ pure_ftpd_openssl_config.state }}"
+      (?i)locality name: "{{ pure_ftpd_openssl_config.locality }}"
+      (?i)organization name: "{{ pure_ftpd_openssl_config.org }}"
+      (?i)organizational unit name: "{{ pure_ftpd_openssl_config.unit }}"
+      (?i)common name: "{{ pure_ftpd_openssl_config.common }}"
+      (?i)email address: "{{ pure_ftpd_openssl_config.email }}"
+  when: 
+    - pure_ftpd_pem is not defined 
+    - not r_ftppem.stat.exists or not result_privatekey.valid_at.now
+
+
+
+- name: Task 4-8 Restrict permissions on PEM
+  ansible.builtin.file: 
+    state: file 
+    path: /etc/ssl/private/pure-ftpd.pem 
+    mode: 0600 
+    owner: root 
+    group: root

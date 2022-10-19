@@ -1,0 +1,11 @@
+[ftp_server]
+ftp-001 ansible_host=192.168.90.65
+
+
+
+
+
+[ftp_server:vars]
+ansible_user=ladmin
+ansible_become=yes 
+ansible_become_method=sudo

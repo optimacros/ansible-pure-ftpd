@@ -1,0 +1,43 @@
+---
+- name: Task 5-1 Create directory {{ item.dir | default( pure_ftpd_root ) }} for virtual FTP user {{ item.name }}
+  ansible.builtin.file: 
+    dest  : '{{ item.dir | default( pure_ftpd_root ) }}'
+    mode  : 0755 
+    state : directory 
+    owner : '{{ pure_ftpd_user }}' 
+    group : '{{ pure_ftpd_group}}'
+
+- name: Task 5-2 Check if pure-pw passwords file exists
+  ansible.builtin.stat: 
+    path : '{{ __ftp_passwd }}'
+  register: r_passwd
+
+- name: Task 5-3 Check if virtual FTP user {{ item.name }} exists
+  ansible.builtin.command: pure-pw show {{ item.name }}
+  register: r_userexists
+  when: r_passwd.stat.exists
+  changed_when: "r_userexists.rc != 0"
+  ignore_errors: true
+
+
+- name: Task 5-4 Create virtual FTP user {{ item.name }}
+  ansible.builtin.expect:
+    command: pure-pw useradd {{ item.name }} -u {{ pure_ftpd_user }} -g {{ pure_ftpd_group }} -d {{ item.dir | default( pure_ftpd_root ) }} -m
+    responses:
+      (?i)password: "{{ item.password }}"
+      (?i)enter it again: "{{ item.password }}"
+  when: (r_userexists is failed) or (not r_passwd.stat.exists)
+
+- name: Task 5-5 Update virtual FTP user {{ item.name }}
+  ansible.builtin.command: pure-pw usermod {{ item.name }} -u {{ pure_ftpd_user }} -g {{ pure_ftpd_group }} -d {{ item.dir | default( pure_ftpd_root ) }} -m
+  when: r_userexists is success
+
+- name: Task 5-6 Update virtual FTP user {{ item.name }} password
+  ansible.builtin.expect:
+    command: pure-pw passwd {{ item.name }}
+    responses:
+      (?i)password: "{{ item.password }}"
+      (?i)enter it again: "{{ item.password }}"
+  when: r_userexists is success
+
+  

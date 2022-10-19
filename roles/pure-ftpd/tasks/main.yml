@@ -1,0 +1,59 @@
+---
+# Variable setup.
+- name: Include OS-specific variables.
+  include_vars: "{{ ansible_os_family }}.yml"
+
+# tasks file for pure-ftpd
+- include_tasks: debian.yml
+  when: ansible_os_family == "Debian"
+
+# Pure-FTPd setup
+- name: Task 1 Create the FTP system group '{{ pure_ftpd_group }}'
+  ansible.builtin.group: 
+    name: '{{ pure_ftpd_group }}' 
+    state: present
+
+- name: Task 2 Create the FTP system user '{{ pure_ftpd_user }}'
+  ansible.builtin.user: 
+    name: '{{ pure_ftpd_user }}'
+    group: '{{ pure_ftpd_group }}' 
+    home: /dev/null 
+    shell: /sbin/nologin 
+    state: present
+
+- name: Task 3 Create FTP server root directory '{{ pure_ftpd_root }}'
+  ansible.builtin.file:
+    dest: '{{ pure_ftpd_root }}' 
+    mode: 0755 
+    state: directory 
+    owner: '{{ pure_ftpd_user }}' 
+    group: '{{ pure_ftpd_group }}'
+
+# Create and/or install SSL certificate
+# Task 4
+- include: tls.yml
+  when: pure_ftpd_tls
+
+# Create the virtual FTP users and set their passwords
+# Task 5
+- include: virtual-user.yml
+  with_items: "{{ pure_ftpd_vusers }}"
+
+- name: Task 6 Link virtual FTP user database to the correct location
+  ansible.builtin.file: 
+    src  : '{{ __ftp_user_db }}'
+    dest : '{{ __ftp_user_db_sym }}' 
+    state: link
+  register: r_linkdb
+
+- name: Task 7 Restart pure-ftpd
+  ansible.builtin.service: 
+    name=pure-ftpd state=restarted
+  when: r_linkdb.changed
+
+# - Ensure that FTP service is running
+- name: Task 8 Ensure pure-ftpd is started and enabled to start at boot.
+  ansible.builtin.service: 
+    name : pure-ftpd 
+    state: started 
+    enabled : yes
